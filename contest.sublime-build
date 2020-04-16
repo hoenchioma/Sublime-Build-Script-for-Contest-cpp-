@@ -1,5 +1,11 @@
 {
-    "shell_cmd": "g++ -std=c++11 -Wall -Wno-unused-result -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && gnome-terminal -x bash -c 'time \"${file_path}/${file_base_name}\" && read line && exit'",
+    // [default variant (no input, output, inside sublime)]
+    // c++ version: 11
+    // options: -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2
+    // outputs time using "time"
+    // kills program if it takes longer than 5s
+    "shell_cmd": "g++ -std=c++11 -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && timeout 5s time -f \"\n[real %e, user %U, sys %S]\" \"${file_path}/${file_base_name}\"",
+
     "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
     "working_dir": "${file_path}",
     "selector": "source.c++, source.cpp, source.cc, source.cxx",
@@ -9,13 +15,32 @@
     "variants":
     [
         {
-            "name": "with file input",
-            "shell_cmd": "g++ -std=c++11 -Wall -Wno-unused-result -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && time \"${file_path}/${file_base_name}\" < in.txt",
+            // runs in external shell (gnome-terminal)
+            "name": "in ext shell",
+            // c++ version: 11
+            // options: -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2
+            // launches external shell (gnome-terminal) and executes in bash
+            "shell_cmd": "g++ -std=c++11 -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && gnome-terminal -x bash -c 'time \"${file_path}/${file_base_name}\" && while :; do read line; done'",
         },
 
         {
-            "name": "with file input and output",
-            "shell_cmd": "g++ -std=c++11 -Wall -Wno-unused-result -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && time \"${file_path}/${file_base_name}\" < in.txt > out.txt",
+            // inputs from in.txt
+            "name": "with input file (in.txt)",
+            // c++ version: 11
+            // options: -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2
+            // outputs time using "time"
+            // kills program if it takes longer than 5s
+            "shell_cmd": "g++ -std=c++11 -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && timeout 5s time -f \"\n[real %e, user %U, sys %S]\" \"${file_path}/${file_base_name}\" < in.txt",
+        },
+
+        {
+            // inputs from in.txt and outputs to out.txt
+            "name": "with input (in.txt) and output (out.txt) file",
+            // c++ version: 11
+            // options: -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2
+            // outputs time using "time"
+            // kills program if it takes longer than 5s
+            "shell_cmd": "g++ -std=c++11 -Wall -Wextra -pedantic -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -O2 \"${file}\" -o \"${file_path}/${file_base_name}\" && timeout 5s time -f \"\n[real %e, user %U, sys %S]\" \"${file_path}/${file_base_name}\" < in.txt > out.txt",
         },
     ]
 }
